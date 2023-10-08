@@ -7,17 +7,97 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "FBEC886D-15AB-48BD-BAA6-9A8AC6AED471"
+            uuid = "579EA31A-92B0-46A3-9004-CD2CA39DD5DF"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "FirstCopy/ViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "85"
-            endingLineNumber = "85"
+            startingLineNumber = "48"
+            endingLineNumber = "48"
+            landmarkName = "configureFetchedResultsController()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "579EA31A-92B0-46A3-9004-CD2CA39DD5DF - f376cc9ecd844fd1"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "FirstCopy.ViewController.configureFetchedResultsController() -&gt; ()"
+                  moduleName = "FirstCopy"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/sraavanchevireddy/Documents/iOS%20Projects/FirstCopy/FirstCopy/ViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "54"
+                  endingLineNumber = "54"
+                  offsetFromSymbolStart = "132">
+               </Location>
+               <Location
+                  uuid = "579EA31A-92B0-46A3-9004-CD2CA39DD5DF - f376cc9ecd844eeb"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "FirstCopy.ViewController.configureFetchedResultsController() -&gt; ()"
+                  moduleName = "FirstCopy"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/sraavanchevireddy/Documents/iOS%20Projects/FirstCopy/FirstCopy/ViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "48"
+                  endingLineNumber = "48"
+                  offsetFromSymbolStart = "132">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "29AE730F-CD2F-4F55-8F0F-242AB019552C"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "FirstCopy/ViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "89"
+            endingLineNumber = "89"
             landmarkName = "fetchData()"
             landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "29AE730F-CD2F-4F55-8F0F-242AB019552C - ba5a31448e23609b"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "FirstCopy.ViewController.fetchData() -&gt; ()"
+                  moduleName = "FirstCopy"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/sraavanchevireddy/Documents/iOS%20Projects/FirstCopy/FirstCopy/ViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "95"
+                  endingLineNumber = "95"
+                  offsetFromSymbolStart = "1280">
+               </Location>
+               <Location
+                  uuid = "29AE730F-CD2F-4F55-8F0F-242AB019552C - ba5a31448e2367dd"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "FirstCopy.ViewController.fetchData() -&gt; ()"
+                  moduleName = "FirstCopy"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/sraavanchevireddy/Documents/iOS%20Projects/FirstCopy/FirstCopy/ViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "89"
+                  endingLineNumber = "89"
+                  offsetFromSymbolStart = "1280">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

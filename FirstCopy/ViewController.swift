@@ -7,6 +7,7 @@
 
 import UIKit
 import CoreData
+import Combine
 
 class ViewController: UITableViewController, NSFetchedResultsControllerDelegate {
     enum Section {
@@ -16,6 +17,7 @@ class ViewController: UITableViewController, NSFetchedResultsControllerDelegate 
     let batchSize = 100
     var fetchedResultsController: NSFetchedResultsController<ProductInfo>!
     var diffableDataSource: UITableViewDiffableDataSource<Section, ProductInfo>!
+    private var disposables: Set<AnyCancellable> = Set()
     
     var predictSpringViewModel: PredictFileManager = .init()
     private let delegate = UIApplication.shared.delegate as? AppDelegate
@@ -27,17 +29,19 @@ class ViewController: UITableViewController, NSFetchedResultsControllerDelegate 
         activityIndicator = UIActivityIndicatorView(style: .large)
         activityIndicator.hidesWhenStopped = true
         activityIndicator.center = view.center
-                
-        configureFetchedResultsController()
+        tableView.register(CustomTableViewCell.self, forCellReuseIdentifier: "cell")
+        
         configureDiffableDataSource()
-        fetchData()
+                
+        activityIndicator.startAnimating()
+        view.addSubview(activityIndicator)
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(true)
-        activityIndicator.startAnimating()
-        view.addSubview(activityIndicator)
-//        predictSpringViewModel.input.send("prod1M")
+        predictSpringViewModel.inputDate = Date()
+        configureFetchedResultsController()
+        fetchData()
     }
     
     private func configureFetchedResultsController() {
@@ -47,12 +51,12 @@ class ViewController: UITableViewController, NSFetchedResultsControllerDelegate 
         let fetchRequest: NSFetchRequest<ProductInfo> = ProductInfo.fetchRequest()
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
         fetchRequest.fetchBatchSize = batchSize
-        
+         
         fetchedResultsController = NSFetchedResultsController(
             fetchRequest: fetchRequest,
             managedObjectContext: context,
             sectionNameKeyPath: nil,
-            cacheName: nil
+            cacheName: "predict_spring"
         )
         
         fetchedResultsController.delegate = self
@@ -68,21 +72,22 @@ class ViewController: UITableViewController, NSFetchedResultsControllerDelegate 
         diffableDataSource = UITableViewDiffableDataSource<Section, ProductInfo>(
             tableView: tableView,
             cellProvider: { tableView, indexPath, productInfo in
-                let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-                cell.textLabel?.text = productInfo.title ?? ""
-                cell.detailTextLabel?.text = "SALE Price: \(productInfo.salePrice)"
+                let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as? CustomTableViewCell
+                cell?.model = productInfo
                 return cell
             }
         )
     }
     
     private func fetchData() {
+        debugPrint("Starting Fetch")
         try? fetchedResultsController.performFetch()
         var snapshot = NSDiffableDataSourceSnapshot<Section, ProductInfo>()
         snapshot.appendSections([.main])
         snapshot.appendItems(fetchedResultsController.fetchedObjects ?? [])
         diffableDataSource.apply(snapshot, animatingDifferences: false)
         activityIndicator.stopAnimating()
+        debugPrint("Ending Fetch")
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -91,6 +96,10 @@ class ViewController: UITableViewController, NSFetchedResultsControllerDelegate 
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         return diffableDataSource.tableView(tableView, cellForRowAt: indexPath)
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        UITableView.automaticDimension
     }
 }
 

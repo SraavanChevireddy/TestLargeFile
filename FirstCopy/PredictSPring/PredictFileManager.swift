@@ -9,21 +9,40 @@ import Combine
 import Foundation
 import CoreData
 import UIKit
+import SwiftUI
 
 class PredictFileManager: ObservableObject {
-    
+        
     var input = PassthroughSubject<String, Never>()
-    
+
+    @AppStorage("fetchDate") var fetchDate: String?
+    @Published var inputDate: Date?
     @Published private(set) var filePath: URL?
     @Published private(set) var fileContents: [String] = []
+    @Published private(set) var isLoading: Bool = false
         
     private let delegate = UIApplication.shared.delegate as? AppDelegate
     private var manager: DataManager?
     private var disposables: Set<AnyCancellable> = .init()
     
+    var onFetch: (() -> ())? = nil
+    
     init() {
         let context = delegate?.persistentContainer.viewContext
         manager = DataManager(context: context)
+        
+        $inputDate
+            .compactMap({$0})
+            .sink { [weak self] inputDate in
+                guard let self = self else {
+                    return
+                }
+                guard self.fetchDate != nil else {
+                    self.input.send("prod1M")
+                    self.fetchDate = inputDate.convert
+                    return
+                }
+            }.store(in: &disposables)
         
         input
             .subscribe(on: DispatchQueue(label: "ParseQueue", qos: .background))
@@ -49,6 +68,7 @@ class PredictFileManager: ObservableObject {
             .sink { lines in
                 Task {
                     await self.manager?.prepare(with: lines)
+                    self.isLoading = await self.manager?.isLoading ?? false
                 }
             }.store(in: &disposables)
     }
@@ -72,12 +92,16 @@ actor DataManager {
     private var context: NSManagedObjectContext? = nil
     private(set) var batchSize: Int = 1000
     private(set) var batches: [String] = []
+    private(set) var isLoading: Bool = false
     
     init?(context: NSManagedObjectContext?) {
         self.context = context
     }
     
     func prepare(with: [String]) async {
+        defer {
+            isLoading.toggle()
+        }
         batches = with
         for eachBatch in batches.chunked(into: batchSize) {
             let filteredBatch = await insertChunked(products: eachBatch)

@@ -7,95 +7,78 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "579EA31A-92B0-46A3-9004-CD2CA39DD5DF"
+            uuid = "7600FDB4-D532-431E-AB56-001F3E15B6F6"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "FirstCopy/ViewController.swift"
+            filePath = "FirstCopy/PredictSPring/PredictFileManager.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "48"
-            endingLineNumber = "48"
-            landmarkName = "configureFetchedResultsController()"
+            startingLineNumber = "93"
+            endingLineNumber = "93"
+            landmarkName = "urlSession(_:downloadTask:didFinishDownloadingTo:)"
             landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "579EA31A-92B0-46A3-9004-CD2CA39DD5DF - f376cc9ecd844fd1"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "FirstCopy.ViewController.configureFetchedResultsController() -&gt; ()"
-                  moduleName = "FirstCopy"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/sraavanchevireddy/Documents/iOS%20Projects/FirstCopy/FirstCopy/ViewController.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "54"
-                  endingLineNumber = "54"
-                  offsetFromSymbolStart = "132">
-               </Location>
-               <Location
-                  uuid = "579EA31A-92B0-46A3-9004-CD2CA39DD5DF - f376cc9ecd844eeb"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "FirstCopy.ViewController.configureFetchedResultsController() -&gt; ()"
-                  moduleName = "FirstCopy"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/sraavanchevireddy/Documents/iOS%20Projects/FirstCopy/FirstCopy/ViewController.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "48"
-                  endingLineNumber = "48"
-                  offsetFromSymbolStart = "132">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "29AE730F-CD2F-4F55-8F0F-242AB019552C"
+            uuid = "E2AAAE93-EFC0-459D-87AF-4ECD0D76761B"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "FirstCopy/ViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "89"
-            endingLineNumber = "89"
-            landmarkName = "fetchData()"
+            startingLineNumber = "69"
+            endingLineNumber = "69"
+            landmarkName = "addSubscriptions()"
             landmarkType = "7">
             <Locations>
                <Location
-                  uuid = "29AE730F-CD2F-4F55-8F0F-242AB019552C - ba5a31448e23609b"
+                  uuid = "E2AAAE93-EFC0-459D-87AF-4ECD0D76761B - e1717e2dacfe0e6e"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "FirstCopy.ViewController.fetchData() -&gt; ()"
+                  symbolName = "closure #2 (Foundation.URL) -&gt; () in FirstCopy.ViewController.addSubscriptions() -&gt; ()"
                   moduleName = "FirstCopy"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/sraavanchevireddy/Documents/iOS%20Projects/FirstCopy/FirstCopy/ViewController.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "95"
-                  endingLineNumber = "95"
-                  offsetFromSymbolStart = "1280">
+                  startingLineNumber = "67"
+                  endingLineNumber = "67"
+                  offsetFromSymbolStart = "156">
                </Location>
                <Location
-                  uuid = "29AE730F-CD2F-4F55-8F0F-242AB019552C - ba5a31448e2367dd"
+                  uuid = "E2AAAE93-EFC0-459D-87AF-4ECD0D76761B - e1717e2dacfe0fc9"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "FirstCopy.ViewController.fetchData() -&gt; ()"
+                  symbolName = "closure #2 (Foundation.URL) -&gt; () in FirstCopy.ViewController.addSubscriptions() -&gt; ()"
                   moduleName = "FirstCopy"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/sraavanchevireddy/Documents/iOS%20Projects/FirstCopy/FirstCopy/ViewController.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "89"
-                  endingLineNumber = "89"
-                  offsetFromSymbolStart = "1280">
+                  startingLineNumber = "70"
+                  endingLineNumber = "70"
+                  offsetFromSymbolStart = "336">
+               </Location>
+               <Location
+                  uuid = "E2AAAE93-EFC0-459D-87AF-4ECD0D76761B - 79316ad39e46551c"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 @Swift.MainActor () -&gt; () in closure #2 (Foundation.URL) -&gt; () in FirstCopy.ViewController.addSubscriptions() -&gt; ()"
+                  moduleName = "FirstCopy"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/sraavanchevireddy/Documents/iOS%20Projects/FirstCopy/FirstCopy/ViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "71"
+                  endingLineNumber = "71"
+                  offsetFromSymbolStart = "84">
                </Location>
             </Locations>
          </BreakpointContent>

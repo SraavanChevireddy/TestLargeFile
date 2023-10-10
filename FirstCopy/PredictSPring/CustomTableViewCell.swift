@@ -21,8 +21,12 @@ class CustomTableViewCell: UITableViewCell {
             if let model = model {
                 lbl_title.text = model.title ?? ""
                 lbl_subtitle.text = model.productId ?? ""
-                lbl_basePrice.text = "Sale Price \n$ \(model.salePrice)"
-                lbl_sellingPrice.text = "List Price \n$ \(model.listPrice)"
+                if !model.salePrice.isZero {
+                    lbl_basePrice.text = "Sale Price \n$ \(model.salePrice)"
+                }
+                if !model.listPrice.isZero {
+                    lbl_sellingPrice.text = "List Price \n$ \(model.listPrice)"
+                }
                 
                 lbl_size.text = model.size ?? ""
             }
@@ -41,7 +45,8 @@ class CustomTableViewCell: UITableViewCell {
     private func loadUIComponents() {
         lbl_title = {
             let modalView = UILabel()
-            modalView.font = .systemFont(ofSize: 18, weight: .black, width: .standard)
+            modalView.font = UIFont(name: "Arial Rounded MT Bold", size: 22)
+            modalView.textColor = UIColor.systemPurple
             return modalView
         }()
         
@@ -66,7 +71,7 @@ class CustomTableViewCell: UITableViewCell {
         
         lbl_size = {
             let modalView = UILabel()
-            modalView.font = UIFont(name: "Arial Rounded MT Bold", size: 22)
+            modalView.font = UIFont(name: "Arial Rounded MT Bold", size: 18)
             return modalView
         }()
         

@@ -11,46 +11,48 @@ import CoreData
 import UIKit
 import SwiftUI
 
-class PredictFileManager: ObservableObject {
-        
+class PredictFileManager: NSObject, ObservableObject, URLSessionDownloadDelegate {
+    
     var input = PassthroughSubject<String, Never>()
+    var onReceiveProgress =  PassthroughSubject<Float, Never>()
+    var onDownLoadFinished = PassthroughSubject<URL, Never>()
 
-    @AppStorage("fetchDate") var fetchDate: String?
-    @Published var inputDate: Date?
-    @Published private(set) var filePath: URL?
+    @Published var filePath: URL?
+    
     @Published private(set) var fileContents: [String] = []
-    @Published private(set) var isLoading: Bool = false
+    @Published private(set) var downloadProgress: Double = 0.0
+    
+    private var fileManager: URL?
         
     private let delegate = UIApplication.shared.delegate as? AppDelegate
     private var manager: DataManager?
     private var disposables: Set<AnyCancellable> = .init()
     
-    var onFetch: (() -> ())? = nil
+    var progress: (() -> ())?
     
-    init() {
+    override init() {
+        super.init()
+
+        addSubscriptions()
+    }
+    
+    private func addSubscriptions() {
         let context = delegate?.persistentContainer.viewContext
         manager = DataManager(context: context)
         
-        $inputDate
-            .compactMap({$0})
-            .sink { [weak self] inputDate in
-                guard let self = self else {
-                    return
-                }
-                guard self.fetchDate != nil else {
-                    self.input.send("prod1M")
-                    self.fetchDate = inputDate.convert
-                    return
-                }
-            }.store(in: &disposables)
-        
+        fileManager = try? FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: .documentsDirectory, create: true)
+           
         input
             .subscribe(on: DispatchQueue(label: "ParseQueue", qos: .background))
             .map({$0})
-            .map { Bundle.main.url(forResource: $0, withExtension: "csv") }
-            .replaceError(with: nil)
-            .assign(to: \.filePath, on: self)
-            .store(in: &disposables)
+            .sink { [weak self] in
+                guard let self = self, let fileManager = fileManager else {
+                    debugPrint("Unable to locate the File Manager")
+                    return
+                }
+                let file = fileManager.appending(path: "predict_spring.csv")
+                self.downloadFile(fileID: $0, destinationURL: file)
+            }.store(in: &disposables)
         
         $filePath
             .subscribe(on: DispatchQueue(label: "ParseQueue", qos: .background))
@@ -68,9 +70,32 @@ class PredictFileManager: ObservableObject {
             .sink { lines in
                 Task {
                     await self.manager?.prepare(with: lines)
-                    self.isLoading = await self.manager?.isLoading ?? false
                 }
             }.store(in: &disposables)
+    }
+    
+    func downloadFile(fileID: String, destinationURL: URL)  {
+        let url = URL(string: "https://drive.google.com/uc?export=download&id=\(fileID)")!
+        let downloadQueue = OperationQueue()
+        downloadQueue.qualityOfService = .utility
+        let sessionConfiguration = URLSessionConfiguration.default
+        sessionConfiguration.urlCache = nil
+        
+        let session = URLSession(configuration: sessionConfiguration, delegate: self, delegateQueue: downloadQueue)
+        let task = session.downloadTask(with: url)
+        task.resume()
+    }
+    
+    func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
+        if let filePath = filePath, FileManager.default.fileExists(atPath: filePath.absoluteString) {
+            try? FileManager.default.removeItem(at: filePath)
+        }
+        onDownLoadFinished.send(location)
+    }
+    
+    func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
+        let downloadPr = Float(totalBytesWritten) / Float(totalBytesExpectedToWrite)
+        onReceiveProgress.send(downloadPr)
     }
 }
 
@@ -88,55 +113,4 @@ extension Collection {
     }
 }
 
-actor DataManager {
-    private var context: NSManagedObjectContext? = nil
-    private(set) var batchSize: Int = 1000
-    private(set) var batches: [String] = []
-    private(set) var isLoading: Bool = false
-    
-    init?(context: NSManagedObjectContext?) {
-        self.context = context
-    }
-    
-    func prepare(with: [String]) async {
-        defer {
-            isLoading.toggle()
-        }
-        batches = with
-        for eachBatch in batches.chunked(into: batchSize) {
-            let filteredBatch = await insertChunked(products: eachBatch)
-            try? await insert(batch: filteredBatch)
-        }
-    }
-    
-    func insertChunked(products: [String]) async -> NSBatchInsertRequest {
-        var index = 0
-        let batchInsert = NSBatchInsertRequest(entity: ProductInfo.entity()) { (managedContext: NSManagedObject) -> Bool in
-            guard index < products.count else {
-                return true
-            }
-            if let product = managedContext as? ProductInfo {
-                let data = products[safe: index]?.components(separatedBy: ",") ?? []
-                product.productId = data[safe: 0]
-                product.title = data[safe: 1]
-                product.listPrice = Double(data[safe: 2] ?? "") ?? 0.0
-                product.salePrice = Double(data[safe: 3] ?? "") ?? 0.0
-                product.color = data[safe: 4]
-                product.size = data[safe: 5]
-            }
-            index += 1
-            return false
-        }
-        return batchInsert
-    }
-    
-    func insert(batch: NSBatchInsertRequest) async throws {
-        guard context != nil else {
-            throw NSError(domain: "Unable to find context", code: 22)
-        }
-        let result = try? context?.execute(batch)
-        debugPrint("PREDICTSPRING: \(String(describing: result))")
-        try? context?.save()
-    }
-}
 

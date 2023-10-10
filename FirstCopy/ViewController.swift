@@ -23,25 +23,63 @@ class ViewController: UITableViewController, NSFetchedResultsControllerDelegate 
     private let delegate = UIApplication.shared.delegate as? AppDelegate
     
     var activityIndicator: UIActivityIndicatorView!
+    var progressIndicator: UIProgressView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        activityIndicator = UIActivityIndicatorView(style: .large)
-        activityIndicator.hidesWhenStopped = true
-        activityIndicator.center = view.center
-        tableView.register(CustomTableViewCell.self, forCellReuseIdentifier: "cell")
         
+        activityIndicator = {
+            let modalIndicator = UIActivityIndicatorView(style: .medium)
+            modalIndicator.hidesWhenStopped = true
+            modalIndicator.isHidden = true
+            modalIndicator.largeContentTitle = "Fetching Records"
+            modalIndicator.center = view.center
+            return modalIndicator
+        }()
+        
+        progressIndicator = {
+            let indicator = UIProgressView(progressViewStyle: .bar)
+            indicator.largeContentTitle = "Downloading file"
+            indicator.progressTintColor = .systemOrange
+            indicator.center = view.center
+            return indicator
+        }()
+        
+        [activityIndicator, progressIndicator].forEach({view.addSubview($0)})
+        
+        tableView.register(CustomTableViewCell.self, forCellReuseIdentifier: "cell")
+        addSubscriptions()
         configureDiffableDataSource()
                 
-        activityIndicator.startAnimating()
         view.addSubview(activityIndicator)
+    }
+    
+    private func addSubscriptions() {
+        predictSpringViewModel.onReceiveProgress.sink { value in
+            print("\(value)")
+            DispatchQueue.main.async {
+                self.progressIndicator.setProgress(value, animated: true)
+            }
+        }.store(in: &disposables)
+        
+        predictSpringViewModel.onDownLoadFinished.sink { [weak self] filePath in
+            guard let self = self else {
+                return
+            }
+            DispatchQueue.main.async {
+                self.activityIndicator.startAnimating()
+                self.activityIndicator.isHidden = false
+                self.progressIndicator.isHidden = true
+            }
+            self.predictSpringViewModel.filePath = filePath
+            self.configureFetchedResultsController()
+            self.fetchData()
+        }.store(in: &disposables)
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(true)
-        predictSpringViewModel.inputDate = Date()
-        configureFetchedResultsController()
-        fetchData()
+        predictSpringViewModel.input.send("16jxfVYEM04175AMneRlT0EKtaDhhdrrv")
     }
     
     private func configureFetchedResultsController() {
@@ -86,7 +124,9 @@ class ViewController: UITableViewController, NSFetchedResultsControllerDelegate 
         snapshot.appendSections([.main])
         snapshot.appendItems(fetchedResultsController.fetchedObjects ?? [])
         diffableDataSource.apply(snapshot, animatingDifferences: false)
-        activityIndicator.stopAnimating()
+        DispatchQueue.main.async {
+            self.activityIndicator.stopAnimating()
+        }
         debugPrint("Ending Fetch")
     }
     

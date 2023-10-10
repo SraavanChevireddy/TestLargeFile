@@ -15,6 +15,8 @@
 		3C04A63F2ACF3B630080A350 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3C04A63E2ACF3B630080A350 /* Assets.xcassets */; };
 		3C04A6422ACF3B630080A350 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3C04A6402ACF3B630080A350 /* LaunchScreen.storyboard */; };
 		3C04A64B2ACF3B800080A350 /* PredictFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C04A64A2ACF3B800080A350 /* PredictFileManager.swift */; };
+		3C5EB00A2AD5DE3B00D0891A /* PredictFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C04A64A2ACF3B800080A350 /* PredictFileManager.swift */; };
+		3C5EB00B2AD5DF3300D0891A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C04A6322ACF3B620080A350 /* AppDelegate.swift */; };
 		3C7ECA9C2AD5D7C300060EBC /* FirstCopyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C7ECA9B2AD5D7C300060EBC /* FirstCopyTests.swift */; };
 		3C7ECAA22AD5D81300060EBC /* FirstCopy.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 3C04A63B2ACF3B620080A350 /* FirstCopy.xcdatamodeld */; };
 		3C7ECAA32AD5D85600060EBC /* Dateformatter+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CE8C2942AD312A0002C85D3 /* Dateformatter+Ext.swift */; };
@@ -239,7 +241,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				3C7ECA9C2AD5D7C300060EBC /* FirstCopyTests.swift in Sources */,
+				3C5EB00A2AD5DE3B00D0891A /* PredictFileManager.swift in Sources */,
 				3C7ECAA22AD5D81300060EBC /* FirstCopy.xcdatamodeld in Sources */,
+				3C5EB00B2AD5DF3300D0891A /* AppDelegate.swift in Sources */,
 				3C7ECAA32AD5D85600060EBC /* Dateformatter+Ext.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

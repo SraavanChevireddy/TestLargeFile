@@ -19,7 +19,7 @@ class PredictFileManager: NSObject, ObservableObject, URLSessionDownloadDelegate
 
     @Published var filePath: URL?
     
-    @Published private(set) var fileContents: [String] = []
+    @Published  var fileContents: [String] = []
     @Published private(set) var downloadProgress: Double = 0.0
     
     private var fileManager: URL?

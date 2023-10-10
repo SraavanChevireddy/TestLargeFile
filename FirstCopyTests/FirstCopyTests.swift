@@ -7,110 +7,51 @@
 
 import XCTest
 import CoreData
+import SwiftUI
+import Combine
 
-class DataManagerTests: XCTestCase {
-    var dataManager: DataManager!
-    var managedObjectContext: NSManagedObjectContext!
+@testable import FirstCopy
 
-    override func setUpWithError() throws {
-        try super.setUpWithError()
-
-        // Create an in-memory Core Data stack for testing
-        let container = NSPersistentContainer(name: "TestModel")
-        container.loadPersistentStores { description, error in
-            XCTAssertNil(error)
+class PredictFileManagerTests: XCTestCase {
+    
+    var predictFileManager: PredictFileManager!
+    var cancellables: Set<AnyCancellable> = []
+    
+    override func setUp() {
+        super.setUp()
+        predictFileManager = PredictFileManager()
+    }
+    
+    override func tearDown() {
+        predictFileManager = nil
+        cancellables.removeAll()
+        super.tearDown()
+    }
+    
+    func testFileContentsUpdate() {
+            let filePathSubject = CurrentValueSubject<URL?, Never>(URL(fileURLWithPath: "mockedFilePath"))
+            
+            predictFileManager.$filePath
+                .subscribe(on: DispatchQueue(label: "ParseQueue", qos: .background))
+                .compactMap({ $0 })
+                .tryMap { try String(contentsOf: $0) }
+                .map({ $0.components(separatedBy: .newlines) })
+                .map({$0})
+                .replaceError(with: [])
+                .sink { lines in
+                    self.predictFileManager?.fileContents = lines
+                }
+                .store(in: &cancellables)
+        
+        filePathSubject.send(URL(fileURLWithPath: "mockedFilePathWithData"))
+            let expectation = XCTestExpectation(description: "FileContentsUpdated")
+            DispatchQueue.global().async {
+                XCTAssertEqual(self.predictFileManager.fileContents, [])
+                expectation.fulfill()
+            }
+            wait(for: [expectation], timeout: 1.0)
         }
-        managedObjectContext = container.viewContext
-
-        // Initialize DataManager with the test Core Data context
-        dataManager = DataManager(context: managedObjectContext)
-    }
-
-    override func tearDownWithError() throws {
-        dataManager = nil
-        managedObjectContext = nil
-
-        try super.tearDownWithError()
-    }
-
-    // Test the initialization of the DataManager
-    func testDataManagerInitialization() {
-        XCTAssertNotNil(dataManager)
-    }
-
-    // Test the prepare method
-    func testPrepareMethod() {
-        let batchData = ["1,A,10.0,5.0,Red,Large", "2,B,15.0,7.5,Blue,Medium"]
-        let expectation = XCTestExpectation(description: "prepare method expectation")
-
-        dataManager.prepare(with: batchData) { error in
-            XCTAssertNil(error)
-            XCTAssertEqual(self.dataManager.batches.count, 2)
-            expectation.fulfill()
-        }
-
-        wait(for: [expectation], timeout: 5.0)
-    }
-
-    // Test inserting a batch of products
-    func testInsertBatch() {
-        let batchData = ["1,A,10.0,5.0,Red,Large", "2,B,15.0,7.5,Blue,Medium"]
-        let expectation = XCTestExpectation(description: "insert batch expectation")
-
-        dataManager.prepare(with: batchData) { _ in
-            let batchRequest = self.dataManager.insertChunked(products: self.dataManager.batches[0])
-            XCTAssertNoThrow(try self.dataManager.insert(batch: batchRequest))
-            expectation.fulfill()
-        }
-
-        wait(for: [expectation], timeout: 5.0)
-
-        // Fetch and verify the inserted objects
-        let fetchRequest: NSFetchRequest<ProductInfo> = ProductInfo.fetchRequest()
-        let products = try? managedObjectContext.fetch(fetchRequest)
-        XCTAssertEqual(products?.count, 2)
-    }
-
-    // Test inserting a batch with invalid data
-    func testInsertBatchWithInvalidData() {
-        let batchData = ["1,A,10.0,5.0,Red,Large", "invalid data"]
-        let expectation = XCTestExpectation(description: "insert batch with invalid data expectation")
-
-        dataManager.prepare(with: batchData) { _ in
-            let batchRequest = self.dataManager.insertChunked(products: self.dataManager.batches[0])
-            XCTAssertThrowsError(try self.dataManager.insert(batch: batchRequest))
-            expectation.fulfill()
-        }
-
-        wait(for: [expectation], timeout: 5.0)
-
-        // Verify that no objects were inserted due to invalid data
-        let fetchRequest: NSFetchRequest<ProductInfo> = ProductInfo.fetchRequest()
-        let products = try? managedObjectContext.fetch(fetchRequest)
-        XCTAssertEqual(products?.count, 0)
-    }
-
-    // Test inserting a batch with missing context
-    func testInsertBatchWithMissingContext() {
-        let batchData = ["1,A,10.0,5.0,Red,Large"]
-        let expectation = XCTestExpectation(description: "insert batch with missing context expectation")
-
-        // Set the context to nil to simulate a missing context
-        dataManager = DataManager(context: nil)
-
-        dataManager.prepare(with: batchData) { _ in
-            let batchRequest = self.dataManager.insertChunked(products: self.dataManager.batches[0])
-            XCTAssertThrowsError(try self.dataManager.insert(batch: batchRequest))
-            expectation.fulfill()
-        }
-
-        wait(for: [expectation], timeout: 5.0)
-
-        // Verify that no objects were inserted due to missing context
-        let fetchRequest: NSFetchRequest<ProductInfo> = ProductInfo.fetchRequest()
-        let products = try? managedObjectContext.fetch(fetchRequest)
-        XCTAssertEqual(products?.count, 0)
-    }
+    
 }
 
 
